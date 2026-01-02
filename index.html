@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhyEditor - Rich Text Editor</title>
+    <link rel="stylesheet" href="styles/editor.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>WhyEditor</h1>
+            <p>A powerful rich text editor</p>
+        </header>
+
+        <div class="editor-wrapper">
+            <div class="editor-container" id="editorContainer">
+                <!-- Toolbar -->
+                <div class="toolbar" id="toolbar">
+                    <!-- Text Formatting Group -->
+                    <div class="toolbar-group">
+                        <button class="toolbar-btn" data-command="undo" title="Undo (Ctrl+Z)">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <path d="M8 3a5 5 0 0 0-4.546 2.914.5.5 0 0 1-.908-.417A6 6 0 1 1 8 14a.5.5 0 0 1 0-1 5 5 0 1 0 0-10z"/>
+                                <path d="M4.5 7.5v-3h-3"/>
+                            </svg>
+                        </button>
+                        <button class="toolbar-btn" data-command="redo" title="Redo (Ctrl+Y)">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <path d="M8 3a5 5 0 0 1 4.546 2.914.5.5 0 0 0 .908-.417A6 6 0 1 0 8 14a.5.5 0 0 0 0-1 5 5 0 1 1 0-10z"/>
+                                <path d="M11.5 7.5v-3h3"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="toolbar-separator"></div>
+
+                    <!-- Format Dropdown -->
+                    <div class="toolbar-group">
+                        <select class="toolbar-select" id="formatBlock" title="Format">
+                            <option value="p">Paragraph</option>
+                            <option value="h1">Heading 1</option>
+                            <option value="h2">Heading 2</option>
+                            <option value="h3">Heading 3</option>
+                            <option value="h4">Heading 4</option>
+                            <option value="h5">Heading 5</option>
+                            <option value="h6">Heading 6</option>
+                            <option value="pre">Preformatted</option>
+                        </select>
+                    </div>
+
+                    <div class="toolbar-separator"></div>
+
+                    <!-- Text Style Group -->
+                    <div class="toolbar-group">
+                        <button class="toolbar-btn" data-command="bold" title="Bold (Ctrl+B)">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <path d="M8.21 13c2.106 0 3.412-1.087 3.412-2.823 0-1.306-.984-2.283-2.324-2.386v-.055a2.176 2.176 0 0 0 1.852-2.14c0-1.51-1.162-2.46-3.014-2.46H3.843V13H8.21zM5.908 4.674h1.696c.963 0 1.517.451 1.517 1.244 0 .834-.629 1.32-1.73 1.32H5.908V4.673zm0 6.788V8.598h1.73c1.217 0 1.88.492 1.88 1.415 0 .943-.643 1.449-1.832 1.449H5.907z"/>
+                            </svg>
+                        </button>
+                        <button class="toolbar-btn" data-command="italic" title="Italic (Ctrl+I)">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <path d="M7.991 11.674 9.53 4.455c.123-.595.246-.71 1.347-.807l.11-.52H7.211l-.11.52c1.06.096 1.128.212 1.005.807L6.57 11.674c-.123.595-.246.71-1.346.806l-.11.52h3.774l.11-.52c-1.06-.095-1.129-.211-1.006-.806z"/>
+                            </svg>
+                        </button>
+                        <button class="toolbar-btn" data-command="underline" title="Underline (Ctrl+U)">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <path d="M5.313 3.136h-1.23V9.54c0 2.105 1.47 3.623 3.917 3.623s3.917-1.518 3.917-3.623V3.136h-1.23v6.323c0 1.49-.978 2.57-2.687 2.57-1.709 0-2.687-1.08-2.687-2.57V3.136zM12.5 15h-9v-1h9v1z"/>
+                            </svg>
+                        </button>
+                        <button class="toolbar-btn" data-command="strikeThrough" title="Strike Through">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <path d="M8.527 6.106c-.105-.175-.197-.359-.275-.551-.126-.338-.175-.675-.175-1.011 0-.697.242-1.242.726-1.635.483-.392 1.133-.588 1.95-.588.77 0 1.395.202 1.875.606.48.403.78.969.9 1.695l.175.984h1.95l-.158-.984c-.172-1.07-.645-1.931-1.417-2.584C13.295 1.033 12.22.706 10.956.706c-1.248 0-2.287.339-3.118 1.016-.83.678-1.245 1.618-1.245 2.82 0 .539.088 1.034.264 1.486h1.67z"/>
+                                <path d="M0 8.5h16v1H0z"/>
+                                <path d="M6.906 9.5c.201.348.463.654.786.918.694.563 1.746.845 3.155.845 1.41 0 2.565-.346 3.463-1.038.898-.692 1.347-1.602 1.347-2.73 0-.609-.148-1.14-.445-1.595h-2.04c.293.261.439.612.439 1.054 0 .592-.29 1.057-.869 1.395-.579.338-1.362.507-2.349.507-.987 0-1.746-.145-2.277-.435-.282-.154-.504-.341-.665-.56H6.906z"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="toolbar-separator"></div>
+
+                    <!-- List Group -->
+                    <div class="toolbar-group">
+                        <button class="toolbar-btn" data-command="insertUnorderedList" title="Bullet List">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm-3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm0 4a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                            </svg>
+                        </button>
+                        <button class="toolbar-btn" data-command="insertOrderedList" title="Numbered List">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M5 11.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5z"/>
+                                <path d="M1.713 11.865v-.474H2c.217 0 .363-.137.363-.317 0-.185-.158-.31-.361-.31-.223 0-.367.152-.373.31h-.59c.016-.467.373-.787.986-.787.588-.002.954.291.957.703a.595.595 0 0 1-.492.594v.033a.615.615 0 0 1 .569.631c.003.533-.502.8-1.051.8-.656 0-1-.37-1.008-.794h.582c.008.178.186.306.422.309.254 0 .424-.145.422-.35-.002-.195-.155-.348-.414-.348h-.3zm-.004-4.699h-.604v-.035c0-.408.295-.844.958-.844.583 0 .96.326.96.756 0 .389-.257.617-.476.848l-.537.572v.03h1.054V9H1.143v-.395l.957-.99c.138-.142.293-.304.293-.508 0-.18-.147-.32-.342-.32a.33.33 0 0 0-.342.338v.041zM2.564 5h-.635V2.924h-.031l-.598.42v-.567l.629-.443h.635V5z"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="toolbar-separator"></div>
+
+                    <!-- Alignment Group -->
+                    <div class="toolbar-group">
+                        <button class="toolbar-btn" data-command="justifyLeft" title="Align Left">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M2 12.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
+                            </svg>
+                        </button>
+                        <button class="toolbar-btn" data-command="justifyCenter" title="Align Center">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M4 12.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
+                            </svg>
+                        </button>
+                        <button class="toolbar-btn" data-command="justifyRight" title="Align Right">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M6 12.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-4-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm4-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-4-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
+                            </svg>
+                        </button>
+                        <button class="toolbar-btn" data-command="justifyFull" title="Justify">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M2 12.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="toolbar-separator"></div>
+
+                    <!-- Link and Color Group -->
+                    <div class="toolbar-group">
+                        <button class="toolbar-btn" data-command="createLink" title="Insert Link">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1.002 1.002 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4.018 4.018 0 0 1-.128-1.287z"/>
+                                <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243L6.586 4.672z"/>
+                            </svg>
+                        </button>
+                        <button class="toolbar-btn" data-command="unlink" title="Remove Link">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <path d="M14.082 2.182a.5.5 0 0 1 .103.557L8.528 15.467a.5.5 0 0 1-.917-.007L5.57 10.694.803 8.652a.5.5 0 0 1-.006-.916l12.728-5.657a.5.5 0 0 1 .556.103z"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="toolbar-separator"></div>
+
+                    <!-- Color Group -->
+                    <div class="toolbar-group">
+                        <div class="color-picker-wrapper">
+                            <button class="toolbar-btn" id="textColorBtn" title="Text Color">
+                                <svg width="16" height="16" viewBox="0 0 16 16">
+                                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                                </svg>
+                                <span class="color-indicator" id="textColorIndicator"></span>
+                            </button>
+                            <input type="color" id="textColorPicker" value="#000000" class="hidden-color-input">
+                        </div>
+                        <div class="color-picker-wrapper">
+                            <button class="toolbar-btn" id="bgColorBtn" title="Background Color">
+                                <svg width="16" height="16" viewBox="0 0 16 16">
+                                    <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7ZM1.5 5A1.5 1.5 0 0 0 0 6.5v3A1.5 1.5 0 0 0 1.5 11H5V5H1.5Z"/>
+                                    <path d="M6 5v6h4.5a1.5 1.5 0 0 0 1.5-1.5v-3A1.5 1.5 0 0 0 10.5 5H6Z"/>
+                                </svg>
+                                <span class="color-indicator" id="bgColorIndicator"></span>
+                            </button>
+                            <input type="color" id="bgColorPicker" value="#ffff00" class="hidden-color-input">
+                        </div>
+                    </div>
+
+                    <div class="toolbar-separator"></div>
+
+                    <!-- Additional Tools -->
+                    <div class="toolbar-group">
+                        <button class="toolbar-btn" data-command="insertImage" title="Insert Image">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                                <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
+                            </svg>
+                        </button>
+                        <button class="toolbar-btn" data-command="insertTable" title="Insert Table">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm15 2h-4v3h4V4zm0 4h-4v3h4V8zm0 4h-4v3h3a1 1 0 0 0 1-1v-2zm-5 3v-3H6v3h4zm-5 0v-3H1v2a1 1 0 0 0 1 1h3zm-4-4h4V8H1v3zm0-4h4V4H1v3zm5-3v3h4V4H6zm4 4H6v3h4V8z"/>
+                            </svg>
+                        </button>
+                        <button class="toolbar-btn" data-command="insertHorizontalRule" title="Insert Horizontal Line">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8z"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="toolbar-separator"></div>
+
+                    <!-- Code and Clear -->
+                    <div class="toolbar-group">
+                        <button class="toolbar-btn" data-command="removeFormat" title="Remove Formatting">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <path d="M8.5 3a.5.5 0 0 0-1 0v8a.5.5 0 0 0 1 0V3z"/>
+                                <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
+                            </svg>
+                        </button>
+                        <button class="toolbar-btn" data-command="sourceCode" title="View Source Code">
+                            <svg width="16" height="16" viewBox="0 0 16 16">
+                                <path d="M10.478 1.647a.5.5 0 1 0-.956-.294l-4 13a.5.5 0 0 0 .956.294l4-13zM4.854 4.146a.5.5 0 0 1 0 .708L1.707 8l3.147 3.146a.5.5 0 0 1-.708.708l-3.5-3.5a.5.5 0 0 1 0-.708l3.5-3.5a.5.5 0 0 1 .708 0zm6.292 0a.5.5 0 0 0 0 .708L14.293 8l-3.147 3.146a.5.5 0 0 0 .708.708l3.5-3.5a.5.5 0 0 0 0-.708l-3.5-3.5a.5.5 0 0 0-.708 0z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Editor Content Area -->
+                <div class="editor-content" id="editorContent" contenteditable="true">
+                    <p>Start typing here...</p>
+                </div>
+
+                <!-- Character/Word Count -->
+                <div class="editor-footer">
+                    <div class="editor-stats">
+                        <span id="charCount">Characters: 0</span>
+                        <span class="separator">|</span>
+                        <span id="wordCount">Words: 0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button id="getHtmlBtn" class="action-btn">Get HTML</button>
+            <button id="clearBtn" class="action-btn secondary">Clear Content</button>
+        </div>
+
+        <!-- HTML Output Area -->
+        <div id="htmlOutput" class="html-output" style="display: none;">
+            <h3>Generated HTML:</h3>
+            <pre><code id="htmlCode"></code></pre>
+            <button id="copyHtmlBtn" class="action-btn">Copy HTML</button>
+        </div>
+    </div>
+
+    <script src="src/editor.js"></script>
+</body>
+</html>
