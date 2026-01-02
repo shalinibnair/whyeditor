@@ -4,12 +4,16 @@
  */
 
 class WhyEditor {
-    constructor(contentElement, toolbarElement) {
+    constructor(contentElement, toolbarElement, config = {}) {
         this.content = contentElement;
         this.toolbar = toolbarElement;
         this.history = [];
         this.historyStep = -1;
         this.isSourceMode = false;
+        this.config = config;
+
+        // Initialize plugin manager
+        this.pluginManager = new PluginManager(this);
 
         this.init();
     }
@@ -20,6 +24,45 @@ class WhyEditor {
         this.setupColorPickers();
         this.setupKeyboardShortcuts();
         this.setupHistory();
+        this.initPlugins();
+    }
+
+    initPlugins() {
+        // Register all plugins
+        this.pluginManager.register('font', FontPlugin);
+        this.pluginManager.register('scripts', ScriptsPlugin);
+        this.pluginManager.register('blockquote', BlockquotePlugin);
+        this.pluginManager.register('emoji', EmojiPlugin);
+        this.pluginManager.register('specialChars', SpecialCharsPlugin);
+        this.pluginManager.register('findReplace', FindReplacePlugin);
+        this.pluginManager.register('mediaEmbed', MediaEmbedPlugin);
+        this.pluginManager.register('maximize', MaximizePlugin);
+        this.pluginManager.register('autosave', AutosavePlugin);
+        this.pluginManager.register('print', PrintPlugin);
+        this.pluginManager.register('imageUpload', ImageUploadPlugin);
+        this.pluginManager.register('templates', TemplatesPlugin);
+        this.pluginManager.register('anchor', AnchorPlugin);
+        this.pluginManager.register('pasteCleanup', PasteCleanupPlugin);
+
+        // Initialize plugins based on config
+        const pluginsToInit = this.config.plugins || {
+            font: {},
+            scripts: {},
+            blockquote: {},
+            emoji: {},
+            specialChars: {},
+            findReplace: {},
+            mediaEmbed: {},
+            maximize: {},
+            autosave: { interval: 30000 },
+            print: {},
+            imageUpload: {},
+            templates: {},
+            anchor: {},
+            pasteCleanup: {}
+        };
+
+        this.pluginManager.initPlugins(pluginsToInit);
     }
 
     setupToolbar() {
@@ -60,13 +103,7 @@ class WhyEditor {
             this.saveHistory();
         });
 
-        // Handle paste
-        this.content.addEventListener('paste', (e) => {
-            // Allow default paste but clean it up
-            setTimeout(() => {
-                this.cleanupContent();
-            }, 10);
-        });
+        // Paste is handled by pasteCleanup plugin
     }
 
     setupColorPickers() {
